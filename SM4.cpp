@@ -1,3 +1,4 @@
+/*----SM4åŠ å¯†----*/
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -66,7 +67,7 @@ const uint8_t s_box[256] = {
 };
 
 
-uint32_t move(uint32_t data, int length)		//ÒÆÎ»ÔËËã
+uint32_t move(uint32_t data, int length)		//ç§»ä½è¿ç®—
 {
 	uint32_t result = 0;
 	result = (data << length) ^ (data >> (32 - length));
@@ -74,7 +75,7 @@ uint32_t move(uint32_t data, int length)		//ÒÆÎ»ÔËËã
 }
 
 
-uint32_t T(uint32_t input)		//TÖÃ»»
+uint32_t T(uint32_t input)		//Tç½®æ¢
 {
 	uint8_t b[4] = { input >> 24,input >> 16,input >> 8,input };
 	for (int i = 0; i < 4; i++)
@@ -86,7 +87,7 @@ uint32_t T(uint32_t input)		//TÖÃ»»
 	return c;
 }
 
-void T_1(uint32_t* input, uint32_t* rk)		//T'ÖÃ»»
+void T_1(uint32_t* input, uint32_t* rk)		//T'ç½®æ¢
 {
 	uint32_t k[50];
 	for (int i = 0; i < 4; i++)
@@ -110,7 +111,7 @@ void T_1(uint32_t* input, uint32_t* rk)		//T'ÖÃ»»
 	}
 }
 
-void F(uint32_t* input, uint32_t rk, uint32_t* output)	//ÂÖº¯Êı
+void F(uint32_t* input, uint32_t rk, uint32_t* output)	//è½®å‡½æ•°
 {
 	output[0] = input[1];
 	output[1] = input[2];
