@@ -3,7 +3,7 @@
 #include <cmath>
 #include<windows.h>
 using namespace std;
-/*----SM3¼ÓÃÜ----*/
+/*----SM3åŠ å¯†----*/
 
 string BinToHex(string str) {
 	string t = "";
@@ -102,14 +102,14 @@ string DecToHex(int str)
 	return t;
 }
 
-string padding(string str)		//¶ÔÊı¾İ½øĞĞÌî³ä 
+string padding(string str)		//å¯¹æ•°æ®è¿›è¡Œå¡«å…… 
 {
 	string res = "";
 	for (int i = 0; i < str.size(); i++) 
 	{
 		res += DecToHex((int)str[i]);
 	}
-	cout << "ÊäÈë×Ö·û´®µÄASCIIÂë±íÊ¾Îª£º" << endl;
+	cout << "è¾“å…¥å­—ç¬¦ä¸²çš„ASCIIç è¡¨ç¤ºä¸ºï¼š" << endl;
 	for (int i = 0; i < res.size(); i++) {
 		cout << res[i];
 		if ((i + 1) % 8 == 0) {
@@ -350,7 +350,7 @@ int main()
 
 	string message;
 	message = "steve";
-	cout <<"ÊäÈë: " + message << endl;
+	cout <<"è¾“å…¥: " + message << endl;
 	cout << endl;
 	LARGE_INTEGER BegainTime;
 	LARGE_INTEGER EndTime;
@@ -358,7 +358,7 @@ int main()
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&BegainTime);
 	string paddingValue = padding(message);
-	cout << "Ìî³äºóµÄÏûÏ¢Îª£º" << endl;
+	cout << "å¡«å……åçš„æ¶ˆæ¯ä¸ºï¼š" << endl;
 	for (int i = 0; i < paddingValue.size() / 64; i++) {
 		for (int j = 0; j < 8; j++) {
 			cout << paddingValue.substr(i * 64 + j * 8, 8) << "  ";
@@ -367,11 +367,11 @@ int main()
 	}
 	cout << endl;
 	string result = iteration(paddingValue);
-	cout << "ÔÓ´ÕÖµ£º" << endl;
+	cout << "æ‚å‡‘å€¼ï¼š" << endl;
 	for (int i = 0; i < 8; i++) {
 		cout << result.substr(i * 8, 8) << "  ";
 	}
 	cout << endl;
 	QueryPerformanceCounter(&EndTime);
-	cout << "ÔËĞĞÊ±¼ä£¨µ¥Î»£ºs£©£º" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
+	cout << "è¿è¡Œæ—¶é—´ï¼ˆå•ä½ï¼šsï¼‰ï¼š" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
 }
