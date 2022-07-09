@@ -118,7 +118,7 @@ int main()
 	string m = "31323334";
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&BegainTime);
-	cout<<SM3(m)<<endl;
+	SM3(m);
 	QueryPerformanceCounter(&EndTime);
 	cout << "运行时间（单位：s）：" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
 	return 0;
