@@ -177,7 +177,7 @@ int birthdayattack(int m)
 
 int main()
 {
-	while (!birthdayattack(8));
+	while (!birthdayattack(10));
 	return 0;
 }
 
