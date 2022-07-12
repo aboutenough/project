@@ -58,12 +58,28 @@ int padding(string& s, int n, uint64_t size) {
 }
 
 void Extend(string B) {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i += 4) {
 		W[i] = str_to_uint(B.substr(8 * i, 8));
-	for (int i = 16; i < 68; i++)
-		W[i] = (P1(W[i - 16] ^ W[i - 9] ^ LeftShift(W[i -3], 15)) ^ LeftShift(W[i - 13], 7) ^ W[i - 6]);
-	for (int i = 0; i < 64; i++)
+		W[i+1] = str_to_uint(B.substr(8 * (i + 1), 8));
+		W[i+2] = str_to_uint(B.substr(8 * (i + 2), 8));
+		W[i+3] = str_to_uint(B.substr(8 * (i + 3), 8));
+	}
+	for (int i = 16; i < 68; i+=4) {
+		W[i] = ((P1(W[i - 16] ^ W[i - 9] ^ LeftShift(W[i - 3], 15))) ^ (LeftShift(W[i - 13], 7) ^ W[i - 6]));
+		W[i+1] = ((P1(W[i - 15] ^ W[i - 8] ^ LeftShift(W[i - 2], 15))) ^ (LeftShift(W[i - 12], 7) ^ W[i - 5]));
+		W[i+2] = ((P1(W[i - 14] ^ W[i - 7] ^ LeftShift(W[i - 1], 15))) ^ (LeftShift(W[i - 11], 7) ^ W[i - 4]));
+		W[i+3] = ((P1(W[i - 13] ^ W[i - 6] ^ LeftShift(W[i], 15))) ^ (LeftShift(W[i - 10], 7) ^ W[i - 3]));
+	}
+	for (int i = 0; i < 64; i += 8) {
 		W_[i] = (W[i] ^ W[i + 4]);
+		W_[i+1] = (W[i+1] ^ W[i + 5]);
+		W_[i+2] = (W[i+2] ^ W[i + 6]);
+		W_[i+3] = (W[i+3] ^ W[i + 7]);
+		W_[i+4] = (W[i+4] ^ W[i + 8]);
+		W_[i+5] = (W[i+5] ^ W[i + 9]);
+		W_[i+6] = (W[i+6] ^ W[i + 10]);
+		W_[i+7] = (W[i+7] ^ W[i + 11]);
+	}
 }
 
 
