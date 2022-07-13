@@ -3,12 +3,16 @@
 #include<sstream>
 using namespace std;
 
+#include<iostream>
+#include<windows.h>
+#include<sstream>
+using namespace std;
+
 string iv = "7380166F4914B2B9172442D7DA8A0600A96F30BC163138AAE38DEE4DB0FB0E4E";
 uint32_t T[2] = { 0x79cc4519, 0x7a879d8a };
 string index = "0123456789ABCDEF";
-uint32_t* W = new uint32_t[68];
-uint32_t* W_ = new uint32_t[64];
-
+uint32_t* W = new uint32_t[68]();
+uint32_t* W_ = new uint32_t[64]();
 int hex_to_int(char p) {
 	return p < 58 ? p - 48 : p - 55;
 }
@@ -26,7 +30,6 @@ string str_to_hex(const string& str)
 	}
 	return result;
 }
-
 uint32_t str_to_uint(string s) {
 	uint32_t temp = 0;
 	for (auto i : s)
@@ -72,6 +75,7 @@ int padding(string& s, int n, uint64_t size) {
 	return n;
 }
 
+
 void Extend(string B) {
 	for (int i = 0; i < 16; i += 4) {
 		W[i] = str_to_uint(B.substr(8 * i, 8));
@@ -97,18 +101,18 @@ void Extend(string B) {
 	}
 }
 
-
-string compress(string V, string Bi) {
+string update(string V, string Bi) {
 	uint32_t temp[8], temp1[8];
 	for (int i = 0; i < 8; i++) {
 		temp[i] = str_to_uint(V.substr(8 * i, 8));
 		temp1[i] = temp[i];
 	}
+	uint32_t SS1, SS2, TT1, TT2;
 	for (int i = 0; i < 64; i++) {
-		uint32_t SS1 = LeftShift((LeftShift(temp[0], 12) + temp[4] +LeftShift(Ti(i), i % 32)), 7);
-		uint32_t SS2 = (SS1 ^ LeftShift(temp[0], 12));
-		uint32_t TT1 = FFi(temp[0], temp[1], temp[2], i) + temp[3] + SS2 +W_[i];
-		uint32_t TT2 = GGi(temp[4], temp[5], temp[6], i) + temp[7] + SS1 +W[i];
+		SS1 = LeftShift((LeftShift(temp[0], 12) + temp[4] +LeftShift(Ti(i), i % 32)), 7);
+		SS2 = (SS1 ^ LeftShift(temp[0], 12));
+		TT1 = FFi(temp[0], temp[1], temp[2], i) + temp[3] + SS2 +W_[i];
+		TT2 = GGi(temp[4], temp[5], temp[6], i) + temp[7] + SS1 +W[i];
 		temp[3] = temp[2];
 		temp[2] = (LeftShift(temp[1], 9));
 		temp[1] = temp[0];
@@ -124,7 +128,9 @@ string compress(string V, string Bi) {
 	return result;
 }
 
-string SM3(string m) {
+string SM3(string m,int flag) {
+	if (flag == 1)
+		 m = str_to_hex(m);
 	uint64_t size = (uint64_t)m.size() * (uint64_t)4;
 	uint64_t num = (size + 1) % 512;
 	int k = padding(m, num < 448 ? 448 - num : 960 - num, size);
@@ -135,9 +141,25 @@ string SM3(string m) {
 	for (int i = 0; i < group_number; i++) {
 		B[i] = m.substr(128 * i, 128);
 		Extend(B[i]);
-		IV[i + 1] = compress(IV[i], B[i]);
+		IV[i + 1] = update(IV[i], B[i]);
 	}
-	return IV[group_number];
+	string temp = IV[group_number];
+	delete[]B;
+	delete[]IV;
+	return temp;
+}
+
+string rand_str(const int len)
+{
+	string str;
+	char c;
+	int idx;
+	for (idx = 0; idx < len; idx++)
+	{
+		c = index[rand() % 16];
+		str.push_back(c);
+	}
+	return str;
 }
 
 
