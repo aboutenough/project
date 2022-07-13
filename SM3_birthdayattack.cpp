@@ -6,16 +6,36 @@
 #include <thread>
 using namespace std;
 
+#include<iostream>
+#include<string>
+#include<windows.h>
+#include <map>
+#include <ctime>
+#include<sstream>
+using namespace std;
+
 string iv = "7380166F4914B2B9172442D7DA8A0600A96F30BC163138AAE38DEE4DB0FB0E4E";
 uint32_t T[2] = { 0x79cc4519, 0x7a879d8a };
 string index = "0123456789ABCDEF";
-uint32_t* W = new uint32_t[68];
-uint32_t* W_ = new uint32_t[64];
-
+uint32_t* W = new uint32_t[68]();
+uint32_t* W_ = new uint32_t[64]();
 int hex_to_int(char p) {
 	return p < 58 ? p - 48 : p - 55;
 }
 
+string str_to_hex(const string& str)
+{
+	string result = "";
+	string tmp;
+	stringstream ss;
+	for (int i = 0; i < str.size(); i++)
+	{
+		ss << hex << int(str[i]) << endl;
+		ss >> tmp;
+		result += tmp;
+	}
+	return result;
+}
 uint32_t str_to_uint(string s) {
 	uint32_t temp = 0;
 	for (auto i : s)
@@ -61,27 +81,44 @@ int padding(string& s, int n, uint64_t size) {
 	return n;
 }
 
+
 void Extend(string B) {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i += 4) {
 		W[i] = str_to_uint(B.substr(8 * i, 8));
-	for (int i = 16; i < 68; i++)
-		W[i] = (P1(W[i - 16] ^ W[i - 9] ^ LeftShift(W[i - 3], 15)) ^ LeftShift(W[i - 13], 7) ^ W[i - 6]);
-	for (int i = 0; i < 64; i++)
+		W[i + 1] = str_to_uint(B.substr(8 * (i + 1), 8));
+		W[i + 2] = str_to_uint(B.substr(8 * (i + 2), 8));
+		W[i + 3] = str_to_uint(B.substr(8 * (i + 3), 8));
+	}
+	for (int i = 16; i < 68; i += 4) {
+		W[i] = ((P1(W[i - 16] ^ W[i - 9] ^ LeftShift(W[i - 3], 15))) ^ (LeftShift(W[i - 13], 7) ^ W[i - 6]));
+		W[i + 1] = ((P1(W[i - 15] ^ W[i - 8] ^ LeftShift(W[i - 2], 15))) ^ (LeftShift(W[i - 12], 7) ^ W[i - 5]));
+		W[i + 2] = ((P1(W[i - 14] ^ W[i - 7] ^ LeftShift(W[i - 1], 15))) ^ (LeftShift(W[i - 11], 7) ^ W[i - 4]));
+		W[i + 3] = ((P1(W[i - 13] ^ W[i - 6] ^ LeftShift(W[i], 15))) ^ (LeftShift(W[i - 10], 7) ^ W[i - 3]));
+	}
+	for (int i = 0; i < 64; i += 8) {
 		W_[i] = (W[i] ^ W[i + 4]);
+		W_[i + 1] = (W[i + 1] ^ W[i + 5]);
+		W_[i + 2] = (W[i + 2] ^ W[i + 6]);
+		W_[i + 3] = (W[i + 3] ^ W[i + 7]);
+		W_[i + 4] = (W[i + 4] ^ W[i + 8]);
+		W_[i + 5] = (W[i + 5] ^ W[i + 9]);
+		W_[i + 6] = (W[i + 6] ^ W[i + 10]);
+		W_[i + 7] = (W[i + 7] ^ W[i + 11]);
+	}
 }
 
-
-string compress(string V, string Bi) {
+string update(string V, string Bi) {
 	uint32_t temp[8], temp1[8];
 	for (int i = 0; i < 8; i++) {
 		temp[i] = str_to_uint(V.substr(8 * i, 8));
 		temp1[i] = temp[i];
 	}
+	uint32_t SS1, SS2, TT1, TT2;
 	for (int i = 0; i < 64; i++) {
-		uint32_t SS1 = LeftShift((LeftShift(temp[0], 12) + temp[4] + LeftShift(Ti(i), i % 32)), 7);
-		uint32_t SS2 = (SS1 ^ LeftShift(temp[0], 12));
-		uint32_t TT1 = FFi(temp[0], temp[1], temp[2], i) + temp[3] + SS2 + W_[i];
-		uint32_t TT2 = GGi(temp[4], temp[5], temp[6], i) + temp[7] + SS1 + W[i];
+		SS1 = LeftShift((LeftShift(temp[0], 12) + temp[4] + LeftShift(Ti(i), i % 32)), 7);
+		SS2 = (SS1 ^ LeftShift(temp[0], 12));
+		TT1 = FFi(temp[0], temp[1], temp[2], i) + temp[3] + SS2 + W_[i];
+		TT2 = GGi(temp[4], temp[5], temp[6], i) + temp[7] + SS1 + W[i];
 		temp[3] = temp[2];
 		temp[2] = (LeftShift(temp[1], 9));
 		temp[1] = temp[0];
@@ -97,7 +134,9 @@ string compress(string V, string Bi) {
 	return result;
 }
 
-string SM3(string m) {
+string SM3(string m, int flag) {
+	if (flag == 1)
+		m = str_to_hex(m);
 	uint64_t size = (uint64_t)m.size() * (uint64_t)4;
 	uint64_t num = (size + 1) % 512;
 	int k = padding(m, num < 448 ? 448 - num : 960 - num, size);
@@ -108,22 +147,25 @@ string SM3(string m) {
 	for (int i = 0; i < group_number; i++) {
 		B[i] = m.substr(128 * i, 128);
 		Extend(B[i]);
-		IV[i + 1] = compress(IV[i], B[i]);
+		IV[i + 1] = update(IV[i], B[i]);
 	}
-	return IV[group_number];
+	string temp = IV[group_number];
+	delete[]B;
+	delete[]IV;
+	return temp;
 }
 
-string rand_str(const int len)  
+string rand_str(const int len)
 {
-	string str;                
-	char c;                     
-	int idx;                   
+	string str;
+	char c;
+	int idx;
 	for (idx = 0; idx < len; idx++)
 	{
 		c = index[rand() % 16];
-		str.push_back(c);      
+		str.push_back(c);
 	}
-	return str;                 
+	return str;
 }
 
 
@@ -141,22 +183,22 @@ int birthdayattack(int m)
 	int count = 0;
 	while (count < 1000) {
 		temp1 = rand_str((rand() % 256) + 16);
-		temp3 = SM3(temp1).substr(0, m);
+		temp3 = SM3(temp1.substr(0, m),0);
 		if (list1[temp3] != "" && temp1 != list1[temp3]) {
 			cout << temp1 << endl;
-			cout << SM3(temp1) << endl;
+			cout << SM3(temp1,0) << endl;
 			cout << list1[temp3] << endl;
-			cout << SM3(list1[temp3]) << endl;
+			cout << SM3(list1[temp3],0) << endl;
 			return 1;
 		}
 		list1[temp3] = temp1;
 		temp2 = rand_str((rand() % 256)+16);
-		temp4 = SM3(temp2).substr(0, m);
+		temp4 = SM3(temp2.substr(0, m),0);
 		if (list2[temp4] != "" && temp2 != list2[temp4]) {
 			cout << temp2 << endl;
-			cout << SM3(temp2) << endl;
+			cout << SM3(temp2,0) << endl;
 			cout << list2[temp4] << endl;
-			cout << SM3(list2[temp4]) << endl;
+			cout << SM3(list2[temp4],0) << endl;
 			return 1;
 		}
 		list2[temp4] = temp2;
@@ -177,7 +219,7 @@ int birthdayattack(int m)
 
 int main()
 {
-	while (!birthdayattack(10));
+	while (!birthdayattack(8));
 	return 0;
 }
 
@@ -201,7 +243,6 @@ int main()
 //message
 //00E5989CF3E4EC07B4CE86BA5FD29E3D28B29E1E9346197E8C991171F00ABFA2313C50ADD6F6B2939963BB8A77E3710AD40963D1249B3FDF53C5DA6B4EE66CDC58824101169E29DA4317089DFC7BF7A2655E61C62377070CF0F
 //2DA8BCC50A038F9C48545522CF3C2E339AAF21EC18C5E57FEC0A1963DE0DBD9208A5F6F9C9374EDCC5F172CFC2B3729EFD308446A3C2122A69B3E7CF25C4F6D0E2DA738B1F0CD8F141C7E2DA5DCA91DF5FFB2B1EB56009CAF4A6F988F33DFB14DB193479ED732E0CDCC695426E838B05C0DE05344FBFCD407FA15EAF4
-
 
 //41bit
 //message
