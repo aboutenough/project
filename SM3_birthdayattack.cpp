@@ -3,14 +3,6 @@
 #include<windows.h>
 #include <map>
 #include <ctime>
-#include <thread>
-using namespace std;
-
-#include<iostream>
-#include<string>
-#include<windows.h>
-#include <map>
-#include <ctime>
 #include<sstream>
 using namespace std;
 
