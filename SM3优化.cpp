@@ -1,5 +1,6 @@
 ﻿#include<iostream>
 #include<windows.h>
+#include<sstream>
 using namespace std;
 
 string iv = "7380166F4914B2B9172442D7DA8A0600A96F30BC163138AAE38DEE4DB0FB0E4E";
@@ -10,6 +11,20 @@ uint32_t* W_ = new uint32_t[64];
 
 int hex_to_int(char p) {
 	return p < 58 ? p - 48 : p - 55;
+}
+
+string str_to_hex(const string& str)
+{
+	string result = "";
+	string tmp;
+	stringstream ss;
+	for (int i = 0; i < str.size(); i++)
+	{
+		ss << hex << int(str[i]) << endl;
+		ss >> tmp;
+		result += tmp;
+	}
+	return result;
 }
 
 uint32_t str_to_uint(string s) {
@@ -131,7 +146,8 @@ int main()
 	LARGE_INTEGER BegainTime;
 	LARGE_INTEGER EndTime;
 	LARGE_INTEGER Frequency;
-	string m = "31323334";
+	string m = "abc";
+	m = str_to_hex(m);
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&BegainTime);
 	SM3(m);
