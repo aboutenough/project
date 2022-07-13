@@ -169,10 +169,9 @@ int main()
 	LARGE_INTEGER EndTime;
 	LARGE_INTEGER Frequency;
 	string m = "abc";
-	m = str_to_hex(m);
 	QueryPerformanceFrequency(&Frequency);
 	QueryPerformanceCounter(&BegainTime);
-	SM3(m);
+	SM3(m，1);
 	QueryPerformanceCounter(&EndTime);
 	cout << "运行时间（单位：s）：" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
 	return 0;
