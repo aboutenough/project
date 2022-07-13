@@ -170,7 +170,7 @@ int rho(int c)
 	string t,n;
 	while (count<100000)
 	{
-		t = SM3(m);
+		t = SM3(m,0);
 		n = t.substr(0, c);
 		if (list[n] != "" && m != list[n]) {
 			cout << "rho length: " << count << endl;
