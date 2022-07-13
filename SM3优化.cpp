@@ -1,8 +1,3 @@
-﻿#include<iostream>
-#include<windows.h>
-#include<sstream>
-using namespace std;
-
 #include<iostream>
 #include<windows.h>
 #include<sstream>
