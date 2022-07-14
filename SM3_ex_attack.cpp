@@ -1,17 +1,30 @@
 #include<iostream>
 #include<windows.h>
+#include<sstream>
 using namespace std;
 
 string iv = "7380166F4914B2B9172442D7DA8A0600A96F30BC163138AAE38DEE4DB0FB0E4E";
 uint32_t T[2] = { 0x79cc4519, 0x7a879d8a };
 string index = "0123456789ABCDEF";
-uint32_t* W = new uint32_t[68];
-uint32_t* W_ = new uint32_t[64];
-
+uint32_t* W = new uint32_t[68]();
+uint32_t* W_ = new uint32_t[64]();
 int hex_to_int(char p) {
 	return p < 58 ? p - 48 : p - 55;
 }
 
+string str_to_hex(const string& str)
+{
+	string result = "";
+	string tmp;
+	stringstream ss;
+	for (int i = 0; i < str.size(); i++)
+	{
+		ss << hex << int(str[i]) << endl;
+		ss >> tmp;
+		result += tmp;
+	}
+	return result;
+}
 uint32_t str_to_uint(string s) {
 	uint32_t temp = 0;
 	for (auto i : s)
@@ -57,9 +70,14 @@ int padding(string& s, int n, uint64_t size) {
 	return n;
 }
 
+
 void Extend(string B) {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 16; i += 4) {
 		W[i] = str_to_uint(B.substr(8 * i, 8));
+		W[i + 1] = str_to_uint(B.substr(8 * (i + 1), 8));
+		W[i + 2] = str_to_uint(B.substr(8 * (i + 2), 8));
+		W[i + 3] = str_to_uint(B.substr(8 * (i + 3), 8));
+	}
 	for (int i = 16; i < 68; i += 4) {
 		W[i] = ((P1(W[i - 16] ^ W[i - 9] ^ LeftShift(W[i - 3], 15))) ^ (LeftShift(W[i - 13], 7) ^ W[i - 6]));
 		W[i + 1] = ((P1(W[i - 15] ^ W[i - 8] ^ LeftShift(W[i - 2], 15))) ^ (LeftShift(W[i - 12], 7) ^ W[i - 5]));
@@ -77,7 +95,6 @@ void Extend(string B) {
 		W_[i + 7] = (W[i + 7] ^ W[i + 11]);
 	}
 }
-
 
 string update(string V, string Bi) {
 	uint32_t temp[8], temp1[8];
@@ -106,13 +123,15 @@ string update(string V, string Bi) {
 	return result;
 }
 
-string compress(string *iv, string *b)
+string compress(string* iv, string* b)
 {
 	Extend(*b);
 	return update(*iv, *b);
 }
 
-string SM3(string m) {
+string SM3(string m, int flag) {
+	if (flag == 1)
+		m = str_to_hex(m);
 	uint64_t size = (uint64_t)m.size() * (uint64_t)4;
 	uint64_t num = (size + 1) % 512;
 	int k = padding(m, num < 448 ? 448 - num : 960 - num, size);
@@ -122,7 +141,8 @@ string SM3(string m) {
 	IV[0] = iv;
 	for (int i = 0; i < group_number; i++) {
 		B[i] = m.substr(128 * i, 128);
-		IV[i + 1] = compress(&IV[i], &B[i]);
+		Extend(B[i]);
+		IV[i + 1] = update(IV[i], B[i]);
 	}
 	string temp = IV[group_number];
 	delete[]B;
@@ -130,12 +150,14 @@ string SM3(string m) {
 	return temp;
 }
 
-void ex_attack(string m,string H_m1, uint64_t len,string *t,string *t2)
+void ex_attack(string m, string H_m1, uint64_t len, string* t, string* t2)
 {
-	uint64_t num = (len + 1) % 512;
-	padding(*t, num < 448 ? 448 - num : 960 - num, len);
-	string m1(len/4, 'a');
-	m = m1+*t + m;
+	string m1(len / 4, 'a');
+	*t = str_to_hex(m1);
+	uint64_t len2 = (uint64_t)(*t).size() * (uint64_t)4;
+	uint64_t num = (len2 + 1) % 512;
+	padding(*t, num < 448 ? 448 - num : 960 - num, len2);
+	m = *t  + str_to_hex(m);
 	uint64_t size = (uint64_t)m.size() * (uint64_t)4;
 	num = (size + 1) % 512;
 	int k = padding(m, num < 448 ? 448 - num : 960 - num, size);
@@ -149,13 +171,14 @@ void ex_attack(string m,string H_m1, uint64_t len,string *t,string *t2)
 int main()
 {
 	string m1 = "this is a project";
+	SM3(m1, 1);
 	string m2 = "append";
-	uint64_t len1 = (uint64_t)m1.size() * (uint64_t)4;;
-	string H_m1 = "944B80739E6526675273A5E234F3013841A2093D250616810B68851FCD7845EA";
-	string t,temp2;
-	ex_attack(m2, H_m1,len1,&t,&temp2);
-	t = m1 + t + m2;
-	string temp1 = SM3(t);
+	uint64_t len1 = (uint64_t)m1.size() * (uint64_t)4;
+	string H_m1 = "1C70E1E0C59B8F4A216032DF732FE5FA9709EE4BBB9005A85175291AD94FA972";
+	string t, temp2;
+	ex_attack(m2, H_m1, len1, &t, &temp2);
+	t = str_to_hex(m1)+t.substr(len1/2) + str_to_hex(m2);
+	string temp1 = SM3(t,0);
 	cout << "M1||M2 Hash :" << temp1 << endl;
 	if (temp2.compare(temp1) == 0)
 		cout << "success" << endl;
