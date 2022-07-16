@@ -270,9 +270,9 @@ public:
 		return false;
 	}
 
-	void printTree() //层序遍历
+	void printTree() //灞傚簭閬嶅巻
 	{
-		cout << "层序遍历" << endl;
+		cout << "灞傚簭閬嶅巻" << endl;
 		int n = treelist.size();
 		for (int i = 0; i < n; i++)
 		{
@@ -311,7 +311,6 @@ public:
 
 int main()
 {
-
 	LARGE_INTEGER BegainTime;
 	LARGE_INTEGER EndTime;
 	LARGE_INTEGER Frequency;
@@ -320,6 +319,6 @@ int main()
 	MerkleTree tree;
 	tree.Create_10w_leaf();
 	QueryPerformanceCounter(&EndTime);
-	cout << "运行时间（单位：s）：" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
+	cout << "杩愯鏃堕棿锛堝崟浣嶏細s锛夛細" << (double)(EndTime.QuadPart - BegainTime.QuadPart) / Frequency.QuadPart << endl;
 	return 0;
 }
