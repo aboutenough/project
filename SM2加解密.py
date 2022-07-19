@@ -111,7 +111,7 @@ def Hash(m):
     return temp
 
 
-p=0xBDB6F4FE3E8B1D9E0DA8C0D46F4C318CEFE4AFE3B6B8551F
+p=0xBDB6F4FE3E8B1D9E0DA8C0D46F4C318CEFE4AFE3B6B8551F        #192  或  256
 a=0xBB8E5E8FBC115E139FE6A814FE48AAA6F0ADA1AA5DF91985
 b=0x1854BEBDC31B21B7AEFC80AB0ECD10D5B1B3308E6DBF11C1
 n=0xBDB6F4FE3E8B1D9E0DA8C0D40FC962195DFAE76F56564677
@@ -173,7 +173,10 @@ def encrypt(m):
         while k==da:
             k=randint(1, n)
         x2,y2=mul_add(Pa[0],Pa[1],k)
-        x2,y2='{:0192b}'.format(x2),'{:0192b}'.format(y2)
+        if(len(hex(p)[2:])*4==192):
+            x2,y2='{:0192b}'.format(x2),'{:0192b}'.format(y2)
+        else:
+            x2, y2 = '{:0256b}'.format(x2), '{:0256b}'.format(y2)
         t=KDF(x2+y2, klen)
         if int(t,2)!=0:
             break
@@ -189,7 +192,10 @@ def decrypt(c1,c2,c3):
     if pow(y1,2,p)!=(pow(x1,3,p)+a*x1+b)%p:
         return False
     x2,y2=mul_add(x1, y1, da)
-    x2,y2='{:0192b}'.format(x2),'{:0192b}'.format(y2)
+    if (len(hex(p)[2:]) * 4 == 192):
+        x2, y2 = '{:0192b}'.format(x2), '{:0192b}'.format(y2)
+    else:
+        x2, y2 = '{:0256b}'.format(x2), '{:0256b}'.format(y2)
     klen=len(c2)*4
     t=KDF(x2+y2, klen)
     if int(t,2)==0:
@@ -207,3 +213,4 @@ c1,c2,c3=encrypt(m)
 m2=decrypt(c1,c2,c3)
 m2=binascii.a2b_hex(m2)
 print(m2)
+
