@@ -151,17 +151,6 @@ def KDF(z,klen):
     return k[:klen]
 
 h=1
-def signature(m):
-    m = bin(m)[2:]
-    klen=len(m)
-    k=random.randint(1,n-1)
-    C1=mul_add(Gx,Gy,k)
-    x1,y1=C1
-    x2,y2=mul_add(Pa[0],Pa[1],k)
-    t=KDF(x2+y2,klen)
-    C2=m^t
-    C3=Hash(x2+m+y2)
-    C=C1+C2+C3
 
 def encrypt(m):
     plen=len(hex(p)[2:])
