@@ -135,7 +135,7 @@ def mul_add(x,y,k):
         qx,qy=add(qx, qy, qx, qy)
         if k[i]=='1':
             qx,qy=add(qx, qy, x, y)
-    return qx,qy
+    return qx%p,qy%p
 
 p=0x8542D69E4C044F18E8B92435BF6FF7DE457283915C45517D722EDB8B08F1DFC3    #256
 a=0x787968B4FA32C3FD2417842E73BBFEFF2F3C848B6831D7E0EC65228B3937E498
