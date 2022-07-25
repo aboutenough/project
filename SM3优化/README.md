@@ -50,3 +50,26 @@ iteration（）为迭代函数，对于杂凑过程迭代运算
 
 进而在SM3优化中对于该代码进行优化。改变了运算变量的类型，减少字符串的使用以及对部分循环采用循环展开，来优化SM3的执行。
 
+在SM3优化中，将原本用string的变量用uint进行代替，来加快运算。
+
+str_to_hex（）函数用于将字符串转换为十六进制串
+
+str_to_uint（）将字符串转换为uint
+
+uint_to_str（）将uint转换为str
+
+实现SM3中循环左移LeftShift，T，FF，GG、P，P1运算
+
+padding（）填充消息并返回长度
+
+Extend（）消息扩展，在该函数中对三个循环进行循环展开
+
+update（）杂凑值更新即compress
+
+SM3（）函数对于用户输入的消息进行预处理，并通过调用上述函数来实现SM3功能，flag标注用户输入的为字符串还是ASCII码串，如果为字符串则需要先转换为ASCII码串
+
+![image](https://user-images.githubusercontent.com/105588850/180757433-ffe54acb-b5c3-4755-be68-70b58290eba5.png)
+
+两次运算结果相同，且第二次运算时间大大减少。
+
+
