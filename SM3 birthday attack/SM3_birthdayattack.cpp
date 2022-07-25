@@ -174,23 +174,31 @@ int birthdayattack(int m)
 	string temp4;
 	int count = 0;
 	while (count < 1000) {
-		temp1 = rand_str((rand() % 256) + 16);
-		temp3 = SM3(temp1.substr(0, m),0);
+		temp1 = rand_str((rand() % 128)+64);
+		temp3 = SM3(temp1, 0).substr(0, m);
 		if (list1[temp3] != "" && temp1 != list1[temp3]) {
+			cout << "m1: ";
 			cout << temp1 << endl;
-			cout << SM3(temp1,0) << endl;
+			cout << "hash: ";
+			cout << SM3(temp1, 0) << endl;
+			cout << "m2: ";
 			cout << list1[temp3] << endl;
-			cout << SM3(list1[temp3],0) << endl;
+			cout << "hash: ";
+			cout << SM3(list1[temp3], 0) << endl;
 			return 1;
 		}
 		list1[temp3] = temp1;
-		temp2 = rand_str((rand() % 256)+16);
-		temp4 = SM3(temp2.substr(0, m),0);
+		temp2 = rand_str((rand() % 128) + 64);
+		temp4 = SM3(temp2, 0).substr(0, m);
 		if (list2[temp4] != "" && temp2 != list2[temp4]) {
+			cout << "m1: ";
 			cout << temp2 << endl;
-			cout << SM3(temp2,0) << endl;
+			cout << "hash: ";
+			cout << SM3(temp2, 0) << endl;
+			cout << "m2: ";
 			cout << list2[temp4] << endl;
-			cout << SM3(list2[temp4],0) << endl;
+			cout << "hash: ";
+			cout << SM3(list2[temp4], 0) << endl;
 			return 1;
 		}
 		list2[temp4] = temp2;
@@ -200,8 +208,8 @@ int birthdayattack(int m)
 	iter = list1.begin();
 	while (iter != list1.end()) {
 		if (list2.find(iter->first) != list2.end()) {
-			cout <<  iter->second << endl;
-			cout <<  list2[iter->first] << endl;
+			cout << iter->second << endl;
+			cout << list2[iter->first] << endl;
 			return 1;
 		}
 		iter++;
@@ -211,7 +219,7 @@ int birthdayattack(int m)
 
 int main()
 {
-	while (!birthdayattack(8));
+	while (!birthdayattack(4));
 	return 0;
 }
 
