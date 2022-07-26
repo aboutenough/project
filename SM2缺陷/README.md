@@ -25,3 +25,6 @@
 ![image](https://user-images.githubusercontent.com/105588850/180985986-26825802-e4c3-4117-b43d-0ef0cb3e9db2.png)
 
 ![image](https://user-images.githubusercontent.com/105588850/180985970-0f6dc8fb-5e49-49d9-9049-b87a85ef9628.png)
+
+
+对于ECDSA签名，不验证消息m的情况下可以伪造签名
