@@ -26,5 +26,18 @@
 
 ![image](https://user-images.githubusercontent.com/105588850/180985970-0f6dc8fb-5e49-49d9-9049-b87a85ef9628.png)
 
+根据ECDSA原理实现ECDSA签名算法，并实现签名伪造
 
 对于ECDSA签名，不验证消息m的情况下可以伪造签名
+
+当敌手获得一个签名（r，s）时，在不验证消息m的情况下可以伪造（r1，s1）通过验证。
+
+只需生成随机u，v∈[1，n-1]，计算R=[u]G＋[v]P，那么r1=Rx%n，s1=（r1*invert（v，n））%n
+
+![image](https://user-images.githubusercontent.com/105588850/180988382-ba5dd58b-34c8-478d-aa50-91983a2da558.png)
+
+![image](https://user-images.githubusercontent.com/105588850/180988409-f799108e-9414-43f6-9dc4-a5cbef529f92.png)
+
+
+
+
