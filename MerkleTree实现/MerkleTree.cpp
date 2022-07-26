@@ -333,9 +333,9 @@ void DeleteTree(MerkleNode* mt)
 	}
 }
 
-void printTree(MerkleNode* Tree) //²ãĞò±éÀú
+void printTree(MerkleNode* Tree) //å±‚åºéå†
 {
-	cout << "²ãĞò±éÀú" << endl;
+	cout << "å±‚åºéå†" << endl;
 	queue < MerkleNode> q;
 	if (Tree != NULL)
 	{
@@ -352,7 +352,7 @@ void printTree(MerkleNode* Tree) //²ãĞò±éÀú
 		{
 			q.push(*q.front().rChild);
 		}
-		q.pop();  //ÒÑ¾­±éÀú¹ıµÄ½Úµã³ö¶ÓÁĞ
+		q.pop();  //å·²ç»éå†è¿‡çš„èŠ‚ç‚¹å‡ºé˜Ÿåˆ—
 	}
 }
 
