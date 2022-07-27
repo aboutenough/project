@@ -165,12 +165,12 @@ except Exception:
     sys.exit()
 else:
     # d1=randint(1,n)
-    d1 = 0x6FCBA2EF9AE0AB902BC3BDE3FF915D44BA4CC78F88E2F8E7F8996D3B8CCEEDEE
+    d1 = 0x1873ff39d12566245acca7afde5af453f0f8d60cd443a7f95fca5b33266b77fb
     C1 = (0x26518fd38aa48284d30ce6e5c42d34b57840d1a03b64947b6a300ffe81797cc8,
           0x208be67614cc4562c219dc0cc060aeca05c52bfc1a990f9f02a4ed972ee91df6)
-    C2 = 0x4e1d4176afeec9e0ddc7702c1bd9a0393b54bb
-    C3 = 0xDF31DE4A7A859CF0E06297030D4F8DE7ACA5D182D89FE278423F7D12F9C3E03C
-    T1 = mul_add(C1[0], C1[1], invert(d1, p))
+    C2 = 0xf24f2bbef37f0d7facbd4c3366bc7d45eba7ac
+    C3 = 0xCCF0B121C1F355591A7C39161EC43B1A6D95AD2CAC149E26267BD9B03DD2B766
+    T1 = mul_add(C1[0], C1[1], invert(d1, n))
     x, y = hex(T1[0]), hex(T1[1])
     klen = len(hex(C2)[2:])*4
     s_client.sendto(x.encode('utf-8'), address)
