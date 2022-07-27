@@ -171,16 +171,21 @@ def removelist(m,hash):     #移除字符串列表
        t+= int(Hash(hex(int(binascii.b2a_hex(m[i].encode()).decode(), 16)).upper()[2:]),16)
     x, y = mul_add(Gx, Gy, t)
     return add(hash[0],hash[1],x,-y)
-
 m1="test1"
+#print((hex(EC_Hash(m1)[0]),hex(EC_Hash(m1)[1])))
 m2="test2"
+# print((hex(EC_Hashab(m1,m2)[0]),hex(EC_Hashab(m1,m2)[1])))
+# x=EC_Hash(m1)
+# y=EC_Hash(m2)
+# print((hex(EC_add(x,y)[0]),hex(EC_add(x,y)[1])))
 m3="test3"
 message=[]
 message.append(m1)
 message.append(m2)
 message.append(m3)
+# print((hex(ECMH(message)[0]),hex(ECMH(message)[1])))
 message1=[]
 message1.append(m2)
 message1.append(m3)
-print(EC_Hash(m1))
-print(removelist(message1,ECMH(message)))
+print((hex(EC_Hash(m1)[0]),hex(EC_Hash(m1)[1])))
+print((hex(removelist(message1,ECMH(message))[0]),hex(removelist(message1,ECMH(message))[1])))
