@@ -161,6 +161,7 @@ else:
 
     s_client.sendto(y.encode('utf-8'),address)
 
+    print("send P1")
     m = "message digest"
     m = hex(int(binascii.b2a_hex(m.encode()).decode(), 16)).upper()[2:]
     IDa = "ALICE123@YAHOO.COM"
@@ -178,6 +179,7 @@ else:
 
     s_client.sendto(e.encode('utf-8'),address)
 
+    print("send Q1,e")
     r,address=s_client.recvfrom(1024)
     r=int(r.decode(),16)
 
@@ -186,6 +188,8 @@ else:
 
     s3,address=s_client.recvfrom(1024)
     s3=int(s3.decode(),16)
+    print("receive r,s2,s3")
     s=((d1*k1)*s2+d1*s3-r)%n
+    print("calculate (r,s)")
     print((hex(r),hex(s)))
     s_client.close()
