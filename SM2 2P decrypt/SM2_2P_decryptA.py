@@ -156,7 +156,7 @@ s_client.bind(address)
 
 print('begin')
 # d2=randint(1,n)
-d2 = 0x5E35D7D3F3C54DBAC72E61819E730B019A84208CA3A35E4C2E353DFCCB2A3B53
+d2 = 0x6cd952f11380df32cd9c0df3aed860b2201eecb4a179e2f50c5e9f33c5b59288
 x, address = s_client.recvfrom(1024)
 x = int(x.decode(), 16)
 
@@ -165,7 +165,7 @@ y = int(y.decode(), 16)
 
 T1 = (x, y)
 
-T2 = mul_add(x, y, invert(d2, p))
+T2 = mul_add(x, y, invert(d2, n))
 
 x, y = hex(T2[0]), hex(T2[1])
 s_client.sendto(x.encode('utf-8'), address)
