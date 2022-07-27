@@ -48,6 +48,8 @@ x=int(x.decode(),16)
 y,address= s_client.recvfrom(1024)
 y=int(y.decode(),16)
 
+print("receive P1")
+
 p1=(x,y)
 P=mul_add(p1[0],p1[1],invert(d2,p))
 P=add(P[0],P[1],Gx,-Gy)
@@ -57,9 +59,14 @@ x=int(x.decode(),16)
 
 y ,address= s_client.recvfrom(1024)
 y=int(y.decode(),16)
+
+print("receive Q1")
+
 Q1=(x,y)
 e,address=s_client.recvfrom(1024)
 e=int(e.decode(),16)
+
+print("receive e")
 
 k2=randint(1,n)
 k3=randint(1,n)
@@ -74,6 +81,8 @@ s_client.sendto(hex(r).encode(),address)
 s_client.sendto(hex(s2).encode(),address)
 
 s_client.sendto(hex(s3).encode(),address)
+
+print("sent r,s2,s3")
 
 print("END")
 
